@@ -7,7 +7,6 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.Media;
 import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,8 @@ public class OpenAiService {
     
     @Autowired
     OpenAiChatModel openAiChatModel;
-    @Autowired
-    OpenAiApi openAiApi;
+    // @Autowired
+    // OpenAiApi openAiApi;
 
     // 일반 응답
     public ChatResponse answerQuery(String prompt) {

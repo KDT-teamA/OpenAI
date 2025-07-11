@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="d-flex vh-100 align-items-center justify-content-center">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col">
+                    <h1 class="mb-4">AI 상호 연동 연습</h1>
+                    <h4>일반 질의 응답</h4>
+                    <form id="generalQueryForm">
+                        <div class="mb-3">
+                            <label for="generalQuery" class="form-label">질문을 입력해주세요</label>
+                            <input type="text" class="form-control" id="generalQuery" name="query">
+                        </div>
+                        <button type="submit" class="btn btn-primary">질문하기</button>
+                    </form>
+                    <div id="generalResponse" class="border rounded p-3 bg-light"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('#generalQueryForm').on('submit', function(event) {
+                event.preventDefault();
+                const query = $('#generalQuery').val();
+                if (!query) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류',
+                        text: '질문을 입력해주세요.'
+                    });
+                    return;
+                }
+                
+                $.ajax({
+                    url: '/ai/query',
+                    type: 'POST',
+                    data: { query: query },
+                    success: function (result) {
+                    if (result && result.results && result.results.length > 0) {
+                        var resultMessage = result.results[0].output.content || "응답내용 없음";
+                        $('#generalResponse').html('<strong>응답: </strong><p>' + resultMessage + '</p>');
+                    } else {
+                        $('#generalResponse').html('<strong>응답오류: </strong><p>응답내용이 없습니다.</p>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#generalResponse').html('<strong>오류: </strong><p>' + error + '</p>');
+                }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -20,23 +20,31 @@ configurations {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
-
+ 
+ext {
+    set('springAiVersion', "1.0.0-M3")
+}
+ 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	// https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-openai-spring-boot-starter
-	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-M6'
-	// https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-openai
-	implementation 'org.springframework.ai:spring-ai-openai:1.0.0-M6'
-	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-	implementation 'org.modelmapper:modelmapper:3.2.4'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+    implementation 'org.springframework.ai:spring-ai-openai'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation "org.modelmapper:modelmapper:3.1.1"
+}
+ 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
 }
 
 tasks.named('test') {
