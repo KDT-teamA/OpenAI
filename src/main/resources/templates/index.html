@@ -67,7 +67,9 @@
             background: #574b90;
         }
 
-        #generalResponse, #imageResponse {
+        #generalResponse, #imageResponse, #response {
+            overflow-y: auto;
+            max-height: 300px;
             margin-top: 2rem;
             background: #f5f6fa;
             border-radius: 1rem;
@@ -84,37 +86,73 @@
     </style>
 </head>
 <body>
-    <div class="ai-card text-center me-5">
-        <h1 class="mb-3">🧠 AI 질의 응답</h1>
-        <h5 class="mb-4">궁금한 것을 물어보세요</h5>
-        <form id="generalQueryForm">
-            <div class="mb-3 text-start">
-                <label for="generalQuery" class="form-label">질문</label>
-                <input type="text" class="form-control" id="generalQuery" name="query" placeholder="예: 오늘 날씨 어때?">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="mb-4 text-center">
+                    <button class="btn btn-primary me-2 tab-btn" data-target="card-query">일반 질의 응답</button>
+                    <button class="btn btn-primary me-2 tab-btn" data-target="card-image">이미지 설명</button>
+                    <button class="btn btn-primary tab-btn" data-target="card-chat">채팅창</button>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">질문하기</button>
-        </form>
-        <div id="generalResponse" class="text-start mt-4"></div>
-    </div>
-    <div class="ai-card text-center">
-        <h1 class="mb-3">🧠 AI 이미지 설명</h1>
-        <h5 class="mb-4">궁금한 것을 물어보세요</h5>
-        <form id="imageForm" enctype="multipart/form-data">
-            <div class="mb-3 text-start">
-                <label for="prompt" class="form-label">질문</label>
-                <input type="text" class="form-control" id="prompt" name="prompt">
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <div id="card-query" class="ai-card text-center">
+                    <h1 class="mb-3">🧠 AI 질의 응답</h1>
+                    <h5 class="mb-4">궁금한 것을 물어보세요</h5>
+                    <form id="generalQueryForm">
+                        <div class="mb-3 text-start">
+                            <label for="generalQuery" class="form-label">질문</label>
+                            <input type="text" class="form-control" id="generalQuery" name="query" placeholder="예: 오늘 날씨 어때?">
+                        </div>
+                        <button type="submit" class="btn btn-primary">질문하기</button>
+                    </form>
+                    <div id="generalResponse" class="text-start mt-4"></div>
+                </div>
+                <div id="card-image" class="ai-card text-center d-none">
+                    <h1 class="mb-3">🧠 AI 이미지 설명</h1>
+                    <h5 class="mb-4">궁금한 것을 물어보세요</h5>
+                    <form id="imageForm" enctype="multipart/form-data">
+                        <div class="mb-3 text-start">
+                            <label for="prompt" class="form-label">질문</label>
+                            <input type="text" class="form-control" id="prompt" name="prompt">
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="image" class="form-label">이미지를 업로드하세요</label>
+                            <input type="file" class="form-control" id="image" name="image">
+                        </div>        
+                        <button type="submit" class="btn btn-primary">질문하기</button>
+                    </form>
+                    <div id="imageResponse" class="text-start mt-4"></div>
+                </div>
+                <div id="card-chat" class="ai-card text-center d-none">
+                    <h1 class="mb-3">🧠 AI 채팅창</h1>
+                    <h5 class="mb-4">대화내용을 입력하세요</h5>
+                    <form id="chatForm">
+                        <div class="mb-3 text-start">
+                            <label for="query" class="form-label">대화</label>
+                            <input type="text" class="form-control" id="query" name="query" placeholder="예: 오늘 날씨 어때?">
+                        </div>
+                        <button type="submit" class="btn btn-primary">전송</button>
+                    </form>
+                    <div class="text-start mt-4">
+                        <ul id="response">
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3 text-start">
-                <label for="image" class="form-label">이미지를 업로드하세요</label>
-                <input type="file" class="form-control" id="image" name="image">
-            </div>        
-            <button type="submit" class="btn btn-primary">질문하기</button>
-        </form>
-        <div id="imageResponse" class="text-start mt-4"></div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
+            $('.tab-btn').on('click', function() {
+                const targetId = $(this).data('target');
+                $('.ai-card').addClass('d-none'); // 모든 카드 숨기기
+                $('#' + targetId).removeClass('d-none'); // 선택된 카드만 보이기
+            });
+
             $('#generalQueryForm').on('submit', function(event) {
                 event.preventDefault();
                 const query = $('#generalQuery').val();
@@ -167,6 +205,39 @@
                     },
                     error: function (xhr, status, error) {
                         $('#imageResponse').html('<strong>오류: </strong><p>' + error + '</p>');
+                    }
+                });
+            });
+        
+            $('#chatForm').on('submit', function(event) {
+                event.preventDefault();
+                const query = $('#query').val();
+                $('#response').append(
+                    '<li class="list-group-item"><strong>사용자:</strong><p>' + query + '</p></li>'
+                )
+
+                if (!query) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류',
+                        text: '대화 내용을 입력해주세요.'
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    url: '/ai/chat',
+                    type: 'POST',
+                    data: { query: query },
+                    success: function (result) {
+                        $('#response').append(
+                            '<li class="list-group-item"><strong>AI:</strong><p>' + (result.choices[0].message.content || "응답내용 없음") + '</p></li>'
+                        )
+                    },
+                    error: function (xhr, status, error) {
+                        $('#response').append(
+                            '<li class="list-group-item"><strong>오류:</strong><p>' + error + '</p></li>'
+                        );
                     }
                 });
             });

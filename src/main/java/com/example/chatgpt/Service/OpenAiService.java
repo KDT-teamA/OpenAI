@@ -25,13 +25,15 @@ public class OpenAiService {
     private final OpenAiChatModel openAiChatModel;
     private final OpenAiApi openAiApi;
 
+    // 챗봇 응답
     public ResponseEntity<ChatCompletion> chatResponse(String query) {
+
         ChatCompletionMessage systemMsg = new OpenAiApi.ChatCompletionMessage("안녕하세요, 챗봇입니다.", ChatCompletionMessage.Role.SYSTEM);
-        ChatCompletionMessage usermsg1 = new OpenAiApi.ChatCompletionMessage("안녕 봇", ChatCompletionMessage.Role.USER);
+        ChatCompletionMessage userMsg1 = new OpenAiApi.ChatCompletionMessage("안녕 봇", ChatCompletionMessage.Role.USER);
         ChatCompletionMessage assistantMsg1 = new OpenAiApi.ChatCompletionMessage("환영합니다.", ChatCompletionMessage.Role.SYSTEM);
         ChatCompletionMessage userMsg2 = new OpenAiApi.ChatCompletionMessage(query, ChatCompletionMessage.Role.USER);
 
-        ChatCompletionRequest chatCompletionRequest = new ChatCompletionRequest(List.of(systemMsg, usermsg1, assistantMsg1, userMsg2),
+        ChatCompletionRequest chatCompletionRequest = new ChatCompletionRequest(List.of(systemMsg, userMsg1, assistantMsg1, userMsg2),
                                                                                 OpenAiApi.ChatModel.GPT_4_O.getValue(),
                                                                                 0.8,
                                                                                 false);

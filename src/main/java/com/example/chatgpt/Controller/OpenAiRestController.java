@@ -1,7 +1,9 @@
 package com.example.chatgpt.Controller;
 
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,5 +31,10 @@ public class OpenAiRestController {
     public @ResponseBody ChatResponse explainImage(@RequestParam(defaultValue = "이 이미지는 무엇인가요?", name = "prompt") String prompt,
                                                    @RequestPart(required = true, name = "image" ) MultipartFile image) {
         return openAiService.explainTheImage(prompt, image.getResource());
+    }
+
+    @PostMapping("/chat")
+    public @ResponseBody ResponseEntity<OpenAiApi.ChatCompletion> chatQuery(@RequestParam(defaultValue = "안녕", name = "query") String query) {
+        return openAiService.chatResponse(query);
     }
 }
